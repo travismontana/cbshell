@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG CLOUD_SDK_VERSION=289.0.0
+ARG CLOUD_SDK_VERSION=302.0.0
 ENV CLOUD_SDK_VERSION=$CLOUD_SDK_VERSION
 ENV CLOUDSDK_PYTHON=python3
 
@@ -15,11 +15,20 @@ RUN apk add --no-cache \
   coreutils \
   sudo \
   python3 \
+  py3-pip \
   git \
   gnupg \
   wget \
   curl \
   py3-crcmod \
+  openrc \
+  terraform\
+  gcc \
+  libffi-dev \
+  python3-dev \
+  openssl-dev \
+  musl-dev \
+  make \
   file 
 
 # Set root password
@@ -31,6 +40,8 @@ RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/s
 RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
 RUN ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
 RUN ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
+#RUN rc-update add sshd
+#RUN /etc/init.d/sshd start
 
 # Add a user
 # TODO: can this be a loop for multiple users?
@@ -57,6 +68,9 @@ RUN /google-cloud-sdk/bin/gcloud --version
 
 # Install awscli
 RUN pip3 install awscli
+
+# install azure shell
+RUN pip3 install azure-cli
 
 # Setup motd
 RUN echo "Welcome to the shell" > /etc/motd
