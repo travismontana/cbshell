@@ -48,7 +48,11 @@ RUN ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
 RUN echo "bob ALL=(ALL) ALL" >> /etc/sudoers.d/bob
 RUN mkdir -p /home
 RUN adduser -D bob
-RUN echo 'bob:changeme' | chpasswd
+RUN ssh-keygen -t ed25519 -N "" -f /home/bob/.ssh/shell
+cat << _E_O_F_ >> /home/bob/,ssh/authorized_key
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMOHjbbamg/z+ElxbO0V9jxz4xlol1Yb0vIaTLFEYSby ed25519-key-20200326
+_E_O_F_
+#RUN echo 'bob:changeme' | chpasswd
 
 # Install gcloud SDK
 RUN curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -o /tmp/gcloud.tar.gz
